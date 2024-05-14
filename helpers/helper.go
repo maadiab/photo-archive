@@ -3,7 +3,7 @@ package helpers
 import (
 	"log"
 
-	Database "github.com/maadiab/aldifaArchive/database"
+	Database "github.com/maadiab/aldifaapi/database"
 	"golang.org/x/crypto/bcrypt"
 )
 

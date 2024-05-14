@@ -90,12 +90,28 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 		tokenStr := cookie.Value
 		Claims := &Claims{}
 
-		// tkn,err:=
+		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
 
-		if !tkn.valid {
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if !tkn.Valid {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+
+		log.Println("Hello, ", Claims.Username)
+
+		ctx := context.WithValue(r.Context(), "claims", Claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 
 }

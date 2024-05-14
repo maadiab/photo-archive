@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gorilla/mux"
-	Handlers "github.com/maadiab/aldifaArchive/handlers"
-	"github.com/maadiab/aldifaArchive/middleware"
+	Handlers "github.com/maadiab/aldifaapi/handlers"
+	"github.com/maadiab/aldifaapi/middleware"
 )
 
 func Router() *mux.Router {

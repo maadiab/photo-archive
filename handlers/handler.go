@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"text/template"
 
-	Database "github.com/maadiab/aldifaArchive/database"
-	"github.com/maadiab/aldifaArchive/helpers"
+	Database "github.com/maadiab/aldifaapi/database"
+	"github.com/maadiab/aldifaapi/helpers"
 	"golang.org/x/crypto/bcrypt"
 )
 

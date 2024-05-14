@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	Database "github.com/maadiab/aldifaArchive/database"
-	Handlers "github.com/maadiab/aldifaArchive/handlers"
-	"github.com/maadiab/aldifaArchive/routes"
+	Database "github.com/maadiab/aldifaapi/database"
+	Handlers "github.com/maadiab/aldifaapi/handlers"
+	"github.com/maadiab/aldifaapi/routes"
 )
 
 // func init() {
