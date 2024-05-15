@@ -37,6 +37,11 @@ func main() {
 		log.Println("main: Error Creating photographers Table !!!", err)
 	}
 
+	err = Database.CreatePermissionsTable()
+	if err != nil {
+		log.Println("main: Error Creating permissions Table !!!", err)
+	}
+
 	r := routes.Router()
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 

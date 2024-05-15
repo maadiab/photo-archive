@@ -9,6 +9,8 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/jmoiron/sqlx"
+	"github.com/maadiab/aldifaapi/core"
+	Database "github.com/maadiab/aldifaapi/database"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -37,8 +39,37 @@ type Claims struct {
 // check user
 
 func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
+	var userCred core.User
+
+	var hashedPassword string
+
+	// _, err := Database.DB.Exec("SELECT hashedPassword FORM users where username = $1", user.Username)
+	err := db.Get(&hashedPassword, "SELECT hashedPassword FROM users WHERE username =$1", user.Username)
+
+	if err != nil {
+		log.Println("Please check username and password !!!", err)
+		return
+	}
+
+	err = ComparePassword([]byte(hashedPassword), user.Password)
+	if err != nil {
+		log.Println("Please check your password !!!", err)
+		return
+	}
+
+	var userPermissions []string
+	err = db.Get(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("user verified successfully ...")
+	UserPerms = userPermissions
 
 }
+
+// Give user Jwt token
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	var cred Credentials
@@ -48,6 +79,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error deconing data requested for login !!!", err)
 		return
 	}
+
+	// check user
+	CheckUser(r.Context(), Database.DB, cred)
 
 	// Setting claims
 	expirationTime := time.Now().Add(time.Minute * 5)

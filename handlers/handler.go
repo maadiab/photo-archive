@@ -18,7 +18,7 @@ func ServeHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Thi s is login page ..."))
+	w.Write([]byte("This is signup page ..."))
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

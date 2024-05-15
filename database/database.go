@@ -44,9 +44,9 @@ func CreateUsersTable() error {
 	_, err := DB.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR (255),
-		mobile VARCHAR (255),
+		username VARCHAR (255),
 		email VARCHAR (255),
-		rank VARCHAR (255),
+		mobile VARCHAR (255),
 		hashedPassword VARCHAR (255)
 	)`)
 
@@ -71,6 +71,22 @@ func CreatePhotographerTable() error {
 		log.Println("Error Creating photographers Table !!!")
 	} else {
 		log.Println("Creating photographers Table ...")
+	}
+
+	return err
+}
+
+func CreatePermissionsTable() error {
+	_, err := DB.Exec(`CREATE TABLE IF NOT EXISTS permissions (
+		id SERIAL PRIMARY KEY,
+		user_type VARCHAR (255),
+		permission_type VARCHAR (255)
+	)`)
+
+	if err != nil {
+		log.Println("Error Creating permissions Table !!!")
+	} else {
+		log.Println("Creating permissions Table ...")
 	}
 
 	return err
