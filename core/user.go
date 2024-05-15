@@ -1,9 +1,10 @@
 package core
 
 type User struct {
-	ID       int
-	Name     string
-	Username string
-	Email    string
-	Password string
+	ID       int    `db:"id"`
+	Name     string `db:"name"`
+	Username string `db:"username"`
+	Email    string `db:"email"`
+	Mobile   string `db:"mobile"`
+	Password string `db:"password"`
 }

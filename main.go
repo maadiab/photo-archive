@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	Database "github.com/maadiab/aldifaapi/database"
-	Handlers "github.com/maadiab/aldifaapi/handlers"
 	"github.com/maadiab/aldifaapi/routes"
 )
 
@@ -40,8 +39,6 @@ func main() {
 
 	r := routes.Router()
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	http.HandleFunc("/login", Handlers.ServeLogin)
 
 	log.Println("server is running at port: 8080 ...")
 	http.ListenAndServe(":8080", r)

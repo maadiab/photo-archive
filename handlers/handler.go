@@ -1,56 +1,49 @@
 package Handlers
 
 import (
-	"fmt"
+	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
-	"text/template"
 
+	"github.com/maadiab/aldifaapi/core"
 	Database "github.com/maadiab/aldifaapi/database"
 	"github.com/maadiab/aldifaapi/helpers"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/maadiab/aldifaapi/middleware"
+	// "text/template"
 )
 
 func ServeHome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This Is Home Page ..."))
 }
 
-func ServeLogin(w http.ResponseWriter, r *http.Request) {
-	ServePages(w, "login.page.html")
-}
-
-func SignupHandler(w http.ResponseWriter, r *http.Request) {
-
-	// Check if the request method is POST
+func Signup(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Thi s is login page ..."))
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		log.Println("Error parsing form:", err)
-		http.Error(w, "Error parsing form", http.StatusInternalServerError)
+	requiredPermissions := []string{"read", "write"}
+	claims, ok := r.Context().Value("claims").(*middleware.Claims)
+	if !ok {
+		log.Println("No permissions found !!!", ok)
+		http.Error(w, "Permission not found !!!", http.StatusInternalServerError)
 		return
 	}
 
-	name := r.Form.Get("username")
-	email := r.Form.Get("email")
-	mobile := r.Form.Get("mobile")
-	password := r.Form.Get("password")
-
-	err = helpers.AddUser(name, email, mobile, password)
-
-	log.Println(password)
-
-	if err != nil {
-		http.Error(w, "Error inserting user into database", http.StatusInternalServerError)
+	if !hasPermissions(claims.Permissions, requiredPermissions) {
+		http.Error(w, "Insuffecient permission !!!", http.StatusForbidden)
+		return
 	}
 
-	// log.Println(r.Body)
-	// Insert user data into the database
-	// Respond with success message or redirect to another page
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	var user core.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		log.Fatal(err)
+	}
+	helpers.AddUser(Database.DB, user)
+
 }
 
 func ServePages(w http.ResponseWriter, tmpl string) {
@@ -61,79 +54,18 @@ func ServePages(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-func ServeSignup(w http.ResponseWriter, r *http.Request) {
-	ServePages(w, "signup.page.html")
-
-}
-
-func ServeDashboard(w http.ResponseWriter, r *http.Request) {
-	ServePages(w, "dashboard.page.html")
-}
-
-func ServePictures(w http.ResponseWriter, r *http.Request) {
-	ServePages(w, "pictures.page.html")
-}
-
-func ServeForbidden(w http.ResponseWriter, r *http.Request) {
-	ServePages(w, "forbidden.page.html")
-}
-
-func SigninHandler(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
+func hasPermissions(userPermissions []string, requiredPermissions []string) bool {
+	for _, perm := range requiredPermissions {
+		found := false
+		for _, userPerm := range userPermissions {
+			if perm == userPerm {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
 	}
-
-	err := r.ParseForm()
-	if err != nil {
-		log.Println("Error parsing form:", err)
-		http.Error(w, "Error parsing form", http.StatusInternalServerError)
-		return
-	}
-
-	username := r.Form.Get("username")
-	password := r.Form.Get("password")
-
-	var hashedPassword1 string
-	query0 := "SELECT hashedpassword FROM users where name =$1"
-	err = Database.DB.Get(&hashedPassword1, query0, username)
-
-	log.Println(username, password, hashedPassword1)
-
-	if err != nil {
-		log.Println("Please Check Username and Password !!!", err)
-		// log.Println(hashedPassword)
-		return
-	}
-
-	// err = middleware.ComparePassword([]byte(hashedPassword1), password)
-	// if err != nil {
-	// 	log.Println("Error Hashing password !!!", err)
-	// }
-
-	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword1), []byte(password))
-	if err == nil {
-		// Passwords match
-		fmt.Println("Password is correct!")
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-
-	} else if err == bcrypt.ErrMismatchedHashAndPassword {
-		// Passwords don't match
-		fmt.Println("Password is incorrect!")
-	} else {
-		// Other error occurred
-		fmt.Println("Error:", err)
-	}
-
-	// query := "SELECT * FROM users where name =$1 and hashedpassword =$2"
-
-	// err = Database.DB.Get(query, username, hashedPassword1)
-
-	// if err != nil {
-	// 	log.Println("Please Check Username and Password !!!", err)
-	// 	// log.Println(userCred)
-	// 	return
-	// }
-
+	return true
 }

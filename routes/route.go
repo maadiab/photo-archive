@@ -10,16 +10,11 @@ func Router() *mux.Router {
 
 	router := mux.NewRouter()
 
-	// router.HandleFunc("/", Handlers.ServeLogin)
+	router.HandleFunc("/", Handlers.ServeHome)
 	// router.HandleFunc("/login", Handlers.ServeLogin)
-	router.HandleFunc("/register", Handlers.ServeSignup).Methods("GET")
-	router.HandleFunc("/signup", Handlers.SignupHandler).Methods("POST")
-	router.HandleFunc("/signin", Handlers.SigninHandler).Methods("POST")
 
-	router.HandleFunc("/dashboard", Handlers.ServeDashboard)
-	router.HandleFunc("/pictures", Handlers.ServeDashboard)
+	router.HandleFunc("/signup", middleware.Authenticate(Handlers.Signup))
 
-	router.HandleFunc("/login", middleware.Login)
 	// router.HandleFunc("/static/", Handlers.ServeForbidden)
 
 	return router
