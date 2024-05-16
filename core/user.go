@@ -6,6 +6,6 @@ type User struct {
 	Username    string `db:"username"`
 	Email       string `db:"email"`
 	Mobile      string `db:"mobile"`
-	Password    string `db:"password"`
-	Permissions string `db:"permissions"`
+	Password    string `db:"hashedpassword"`
+	Permissions string `db:"permission_type"`
 }

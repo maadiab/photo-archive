@@ -40,7 +40,6 @@ type Claims struct {
 
 func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 	var userCred core.User
-
 	var hashedPassword string
 
 	// _, err := Database.DB.Exec("SELECT hashedPassword FORM users where username = $1", user.Username)
@@ -57,6 +56,12 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 		return
 	}
 
+	err = db.Get(&userCred, "SELECT * FROM users WHERE username = $1 ", user.Username)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
 	var userPermissions []string
 	err = db.Select(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
 	if err != nil {
@@ -64,8 +69,13 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 		return
 	}
 
-	log.Println("user verified successfully ...")
 	UserPerms = userPermissions
+
+	log.Println("user verified successfully ...")
+
+	log.Println("user credential: ", userCred.Username)
+	log.Println(UserPerms)
+	log.Println(userPermissions)
 
 }
 

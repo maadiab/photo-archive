@@ -41,7 +41,7 @@ func AddUser(db *sqlx.DB, user core.User) error {
 	}
 	// log.Println(username, email, mobile, hashedPassword)
 
-	_, err = Database.DB.Exec("INSERT INTO users (name, username,email, mobile, hashedPassword) VALUES ($1, $2, $3, $4,$5)", user.Name, user.Username, user.Email, user.Mobile, hashedPassword)
+	_, err = Database.DB.Exec("INSERT INTO users (name, username,email, mobile, hashedPassword,permission_type) VALUES ($1, $2, $3, $4,$5,$6)", user.Name, user.Username, user.Email, user.Mobile, hashedPassword, user.Permissions)
 
 	if err != nil {
 		log.Println("Error inserting user into database:", err)

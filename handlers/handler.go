@@ -32,7 +32,9 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(claims.Permissions)
 	if !hasPermissions(claims.Permissions, requiredPermissions) {
+		log.Println("nsuffecient permission !!!")
 		http.Error(w, "Insuffecient permission !!!", http.StatusForbidden)
 		return
 	}
