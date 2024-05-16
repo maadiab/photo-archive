@@ -58,9 +58,9 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 	}
 
 	var userPermissions []string
-	err = db.Get(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
+	err = db.Select(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
 	if err != nil {
-		log.Println(err)
+		log.Println("Error: no permissions found !!!", err)
 		return
 	}
 
