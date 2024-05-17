@@ -38,7 +38,7 @@ type Claims struct {
 
 // check user
 
-func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
+func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) error {
 	var userCred core.User
 	var hashedPassword string
 
@@ -47,26 +47,26 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 
 	if err != nil {
 		log.Println("Please check username and password !!!", err)
-		return
+		return err
 	}
 
 	err = ComparePassword([]byte(hashedPassword), user.Password)
 	if err != nil {
 		log.Println("Please check your password !!!", err)
-		return
+		return err
 	}
 
 	err = db.Get(&userCred, "SELECT * FROM users WHERE username = $1 ", user.Username)
 	if err != nil {
 		log.Println("Error: ", err)
-		return
+		return err
 	}
 
 	var userPermissions []string
 	err = db.Select(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
 	if err != nil {
 		log.Println("Error: no permissions found !!!", err)
-		return
+		return err
 	}
 
 	UserPerms = userPermissions
@@ -77,6 +77,7 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) {
 	log.Println(UserPerms)
 	log.Println(userPermissions)
 
+	return err
 }
 
 // Give user Jwt token
@@ -91,7 +92,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check user
-	CheckUser(r.Context(), Database.DB, cred)
+	err = CheckUser(r.Context(), Database.DB, cred)
+	if err != nil {
+		log.Println("Error: authentication error !!! ")
+		return
+	}
 
 	// Setting claims
 	expirationTime := time.Now().Add(time.Minute * 5)
@@ -154,6 +159,7 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 
 		log.Println("Hello, ", Claims.Username)
 
+		// ctx := context.WithValue(r.Context(), "Claims", Claims)
 		ctx := context.WithValue(r.Context(), "claims", Claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
