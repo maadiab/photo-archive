@@ -11,6 +11,8 @@ import (
 func Router() *mux.Router {
 
 	signupPermissions := []string{"read", "write"}
+	GetPhotoPermissions := []string{"read", "write"}
+	// GetPhotographerPermissions := []string{"read", "write"}
 
 	router := mux.NewRouter()
 
@@ -20,7 +22,9 @@ func Router() *mux.Router {
 	// router.HandleFunc("/register", middleware.Authenticate(Handlers.Signup)).Methods("POST")
 	// router.HandleFunc("/register", middleware.Authenticate(middleware.AuthorizationMiddleware(signupPermissions)(http.HandlerFunc(Handlers.Signup)))).Methods("POST")
 
-	router.Handle("/signup", middleware.Authenticate(middleware.AuthorizationMiddleware(signupPermissions)(http.HandlerFunc(Handlers.Signup))))
+	router.Handle("/signup", middleware.Authenticate(middleware.AuthorizationMiddleware(signupPermissions)(http.HandlerFunc(Handlers.Signup)))).Methods("POST")
+	router.Handle("/photo/{id}", middleware.Authenticate(middleware.AuthorizationMiddleware(GetPhotoPermissions)(http.HandlerFunc(Handlers.GetPhoto)))).Methods("GET")
+	// router.Handle("/photographer/{id}", middleware.Authenticate(middleware.AuthorizationMiddleware(GetPhotoPermissions)(http.HandlerFunc(Handlers.)))).Methods("GET")
 
 	// router.HandleFunc("/addimage", middleware.Authenticate(Handlers.Addimage)).Methods("POST")
 

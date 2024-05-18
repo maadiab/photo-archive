@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/maadiab/aldifaapi/core"
 	Database "github.com/maadiab/aldifaapi/database"
 	"github.com/maadiab/aldifaapi/helpers"
@@ -72,6 +74,25 @@ func Addimage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helpers.Addimage(Database.DB, photo)
+}
+
+func GetPhoto(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["id"], 32, 32)
+	if err != nil {
+		log.Println("Error: no user found !!!")
+		return
+	}
+
+	user, nil := helpers.GetPhoto(Database.DB, int(userID))
+	jsonData, err := json.Marshal(user)
+
+	if err != nil {
+		log.Println("Error: no user found !!!", err)
+	}
+
+	w.Write(jsonData)
+
 }
 
 // func ServePages(w http.ResponseWriter, tmpl string) {

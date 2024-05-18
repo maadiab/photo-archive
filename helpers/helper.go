@@ -62,3 +62,41 @@ func Addimage(db *sqlx.DB, photo core.Photo) error {
 	log.Println("photo added successfully ...")
 	return err
 }
+
+func GetPhoto(db *sqlx.DB, userID int) (core.Photo, error) {
+
+	var photo core.Photo
+
+	err := db.Get(&photo, "SELECT * FROM photos WHERE id =$1", userID)
+	if err != nil {
+		log.Println("Error: getting photo !!!", err)
+
+	}
+	return photo, err
+}
+
+func GetUser(db *sqlx.DB, userID int) (core.User, error) {
+
+	var user core.User
+
+	err := db.Get(&user, "SELECT * FROM users WHERE id = $", userID)
+	if err != nil {
+		log.Println("Error: no user found !!!", err)
+
+	}
+	return user, err
+
+}
+
+func GetPhotographer(db *sqlx.DB, userID core.Photographer) (core.Photographer, error) {
+	var photographer core.Photographer
+
+	err := db.Get(&photographer, "SELECT * FROM photographer WHERE id = $1", userID)
+
+	if err != nil {
+		log.Println("Error: no photographer found !!!", err)
+	}
+
+	return photographer, err
+
+}
