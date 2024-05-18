@@ -91,3 +91,22 @@ func CreatePermissionsTable() error {
 
 	return err
 }
+
+func CreatePhotosTable() error {
+	_, err := DB.Exec(`
+	CREATE TABLE IF NOT EXISTS photos (
+id SERIAL PRIMARY KEY,
+name VARCHAR (255),
+photographer VARCHAR (255),
+tags VARCHAR (255)
+	)`)
+
+	if err != nil {
+		log.Println("Error creating photos table !!!")
+
+	} else {
+		log.Println("Creating photos table ... ")
+	}
+
+	return err
+}

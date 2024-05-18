@@ -1,7 +1,8 @@
 package core
 
 type Photo struct {
-	ID           int
-	PhotoName    string
-	Photographer string
+	ID           int      `db:"id"`
+	Name         string   `db:"name"`
+	Photographer string   `db:"photographer"`
+	Tags         []string `db:"tags"`
 }

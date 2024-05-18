@@ -2,7 +2,6 @@ package Handlers
 
 import (
 	"encoding/json"
-	"html/template"
 	"log"
 	"net/http"
 
@@ -12,6 +11,22 @@ import (
 	"github.com/maadiab/aldifaapi/middleware"
 	// "text/template"
 )
+
+func hasPermissions(userPermissions []string, requiredPermissions []string) bool {
+	for _, perm := range requiredPermissions {
+		found := false
+		for _, userPerm := range userPermissions {
+			if perm == userPerm {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
 
 func ServeHome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This Is Home Page ..."))
@@ -48,26 +63,14 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func ServePages(w http.ResponseWriter, tmpl string) {
-	parsedTemplates, _ := template.ParseFiles("./templates/" + tmpl)
-	err := parsedTemplates.Execute(w, nil)
-	if err != nil {
-		log.Println("Error Parsing template", err)
-	}
+func Addimage(w http.ResponseWriter, r *http.Request) {
+
 }
 
-func hasPermissions(userPermissions []string, requiredPermissions []string) bool {
-	for _, perm := range requiredPermissions {
-		found := false
-		for _, userPerm := range userPermissions {
-			if perm == userPerm {
-				found = true
-				break
-			}
-		}
-		if !found {
-			return false
-		}
-	}
-	return true
-}
+// func ServePages(w http.ResponseWriter, tmpl string) {
+// 	parsedTemplates, _ := template.ParseFiles("./templates/" + tmpl)
+// 	err := parsedTemplates.Execute(w, nil)
+// 	if err != nil {
+// 		log.Println("Error Parsing template", err)
+// 	}
+// }

@@ -52,3 +52,13 @@ func AddUser(db *sqlx.DB, user core.User) error {
 	log.Println("User added successfully ...")
 	return err
 }
+
+func Addimage(db *sqlx.DB, photo core.Photo) error {
+	_, err := Database.DB.Exec("INSERT INTO photos (name, photographer, tags) VALUES ($1,$2,$3)", photo.Name, photo.Photographer, photo.Tags)
+	if err != nil {
+		log.Println("Error inserting photo into database: ", err)
+		return err
+	}
+	log.Println("photo added successfully ...")
+	return err
+}

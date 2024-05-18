@@ -23,21 +23,7 @@ func ComparePassword(hashedPassword []byte, inputPassword string) error {
 
 }
 
-// for jwt
-
-type Credentials struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type Claims struct {
-	Username    string   `json:"username"`
-	Permissions []string `json:"permissions"`
-	jwt.StandardClaims
-}
-
 // check user
-
 func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) error {
 	var userCred core.User
 	var hashedPassword string
@@ -82,6 +68,18 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) error {
 
 // Give user Jwt token
 
+// jwt main structs
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Claims struct {
+	Username    string   `json:"username"`
+	Permissions []string `json:"permissions"`
+	jwt.StandardClaims
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	var cred Credentials
 	err := json.NewDecoder(r.Body).Decode(&cred)
@@ -124,6 +122,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Refresh token
+// ....
+// finish refresh
+
+// Authentications (real middleware)
 func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("token")

@@ -13,7 +13,8 @@ func Router() *mux.Router {
 	router.HandleFunc("/", Handlers.ServeHome)
 	// router.HandleFunc("/login", Handlers.ServeLogin)
 
-	router.HandleFunc("/signup", middleware.Authenticate(Handlers.Signup)).Methods("POST")
+	router.HandleFunc("/register", middleware.Authenticate(Handlers.Signup)).Methods("POST")
+	// router.HandleFunc("/addimage", middleware.Authenticate(Handlers.Addimage)).Methods("POST")
 
 	router.HandleFunc("/login", middleware.Login).Methods("POST")
 	// router.HandleFunc("/signup", Handlers.Signup).Methods("POST")
