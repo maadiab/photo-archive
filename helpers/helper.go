@@ -88,7 +88,7 @@ func GetUser(db *sqlx.DB, userID int) (core.User, error) {
 
 }
 
-func GetPhotographer(db *sqlx.DB, userID core.Photographer) (core.Photographer, error) {
+func GetPhotographer(db *sqlx.DB, userID int) (core.Photographer, error) {
 	var photographer core.Photographer
 
 	err := db.Get(&photographer, "SELECT * FROM photographer WHERE id = $1", userID)

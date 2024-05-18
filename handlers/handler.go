@@ -95,6 +95,47 @@ func GetPhoto(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	userId, err := strconv.ParseUint(params["id"], 32, 32)
+	if err != nil {
+		log.Println("Error: no user found !!!", err)
+		return
+	}
+	user, nil := helpers.GetUser(Database.DB, int(userId))
+	jsonData, err := json.Marshal(user)
+
+	if err != nil {
+		log.Println("Error: no user found !!!", err)
+	}
+
+	w.Write(jsonData)
+
+}
+
+func GetPhotographer(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(params["id"], 32, 32)
+	if err != nil {
+		log.Println("Error: no photographer found !!!", err)
+	}
+
+	photographer, nil := helpers.GetPhotographer(Database.DB, int(userID))
+	if err != nil {
+		log.Println("Error: no photographer with given id found !!! ", err)
+
+	}
+
+	jsonData, err := json.Marshal(photographer)
+
+	if err != nil {
+		log.Println("Error marshalling photographer !!!", err)
+	}
+	w.Write(jsonData)
+}
+
 // func ServePages(w http.ResponseWriter, tmpl string) {
 // 	parsedTemplates, _ := template.ParseFiles("./templates/" + tmpl)
 // 	err := parsedTemplates.Execute(w, nil)
