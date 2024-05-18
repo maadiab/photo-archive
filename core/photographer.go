@@ -1,8 +1,8 @@
 package core
 
 type Photographer struct {
-	ID                   int
-	PhotographerName     string
-	PhotographerUserName string
-	HashedPassword       string
+	ID                   int    `db:"id"`
+	PhotographerName     string `db:"name"`
+	PhotographerUserName string `db:"username"`
+	HashedPassword       string `db:"password"`
 }

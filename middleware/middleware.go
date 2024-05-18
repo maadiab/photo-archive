@@ -127,8 +127,51 @@ func Login(w http.ResponseWriter, r *http.Request) {
 // finish refresh
 
 // Authentications (real middleware)
-func Authenticate(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+// func Authenticate(next http.HandlerFunc) http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		cookie, err := r.Cookie("token")
+// 		if err != nil {
+// 			if err == http.ErrNoCookie {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+// 			w.WriteHeader(http.StatusBadRequest)
+// 			return
+// 		}
+
+// 		tokenStr := cookie.Value
+// 		Claims := &Claims{}
+
+// 		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+// 			return JwtKey, nil
+// 		})
+
+// 		if err != nil {
+// 			if err == jwt.ErrSignatureInvalid {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+// 			w.WriteHeader(http.StatusBadRequest)
+// 			return
+// 		}
+
+// 		if !tkn.Valid {
+// 			w.WriteHeader(http.StatusUnauthorized)
+// 			return
+// 		}
+
+// 		log.Println("Hello, ", Claims.Username)
+
+// 		// ctx := context.WithValue(r.Context(), "Claims", Claims)
+// 		ctx := context.WithValue(r.Context(), "claims", Claims)
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	}
+
+// }
+
+// modified version from middleware
+func Authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("token")
 		if err != nil {
 			if err == http.ErrNoCookie {
@@ -140,9 +183,9 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		tokenStr := cookie.Value
-		Claims := &Claims{}
+		claims := &Claims{}
 
-		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+		tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
 			return JwtKey, nil
 		})
 
@@ -160,11 +203,9 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		log.Println("Hello, ", Claims.Username)
+		log.Println("Authenticated user:", claims.Username)
 
-		// ctx := context.WithValue(r.Context(), "Claims", Claims)
-		ctx := context.WithValue(r.Context(), "claims", Claims)
+		ctx := context.WithValue(r.Context(), "claims", claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
-	}
-
+	})
 }
