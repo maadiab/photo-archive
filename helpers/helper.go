@@ -119,3 +119,51 @@ func DeletePhoto(db *sqlx.DB, userID int) error {
 	}
 	return err
 }
+
+func DeletePhotographer(db *sqlx.DB, userID int) error {
+
+	_, err := db.Exec("DELETE FROM photographers WHERE id =$1", userID)
+	if err != nil {
+		log.Println("Error: Cannot delete this photographer !!!", err)
+		return err
+	}
+
+	return err
+}
+
+func GetUsers(db *sqlx.DB) ([]core.User, error) {
+	var users []core.User
+
+	err := db.Select(&users, "SELECT * FROM users")
+	if err != nil {
+		log.Println("Error: ", err)
+		return nil, err
+	}
+	return users, err
+}
+
+func Getphotos(db *sqlx.DB) ([]core.Photo, error) {
+
+	var photos []core.Photo
+
+	err := db.Select(&photos, "SELECT * FROM photos")
+	if err != nil {
+		log.Println("Error: ", err)
+		return nil, err
+	}
+	return photos, err
+}
+
+func GetPhotographers(db *sqlx.DB) ([]core.Photographer, error) {
+
+	var photographers []core.Photographer
+
+	err := db.Select(&photographers, "SELECT * FROM photographers")
+	if err != nil {
+
+		log.Println("Error: ", err)
+		return nil, err
+	}
+	return photographers, err
+
+}
