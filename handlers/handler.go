@@ -82,7 +82,7 @@ func Addimage(w http.ResponseWriter, r *http.Request) {
 func AddPhotographer(w http.ResponseWriter, r *http.Request) {
 	var photographer core.Photographer
 
-	err := helpers.AddPhotographer(Database.DB, photographer)
+	_, err := helpers.AddPhotographer(Database.DB, photographer)
 	if err != nil {
 		log.Println("Error: ", err)
 		return
@@ -92,6 +92,8 @@ func AddPhotographer(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error: ", err)
 		return
 	}
+
+	// json.Unmarshal(r.Body, &photographer)
 
 	w.Write([]byte("Photographer added successfully ..."))
 	log.Println("Photographer added successfully ...")

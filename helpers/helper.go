@@ -63,16 +63,16 @@ func Addimage(db *sqlx.DB, photo core.Photo) error {
 	return err
 }
 
-func AddPhotographer(db *sqlx.DB, photographer core.Photographer) error {
+func AddPhotographer(db *sqlx.DB, photographer core.Photographer) (core.Photographer, error) {
 
 	_, err := db.Exec("INSERT INTO photographers (name, username, password) VALUES ($1,$2,$3)", photographer.PhotographerName, photographer.PhotographerUserName, photographer.HashedPassword)
 	if err != nil {
 		log.Println("Error adding photographer into database: ", err)
-		return err
+		return core.Photographer{}, err
 	}
 
 	log.Println("Photographer added successfully ...")
-	return err
+	return photographer, err
 }
 
 func GetPhoto(db *sqlx.DB, userID int) (core.Photo, error) {
