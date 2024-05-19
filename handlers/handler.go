@@ -67,13 +67,35 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 func Addimage(w http.ResponseWriter, r *http.Request) {
 	var photo core.Photo
 
-	err := json.NewDecoder(r.Body).Decode(&photo)
+	err := helpers.Addimage(Database.DB, photo)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+	err = json.NewDecoder(r.Body).Decode(&photo)
 	if err != nil {
 		log.Println("Error decoding photo !!!", err)
 		return
 	}
+}
 
-	helpers.Addimage(Database.DB, photo)
+func AddPhotographer(w http.ResponseWriter, r *http.Request) {
+	var photographer core.Photographer
+
+	err := helpers.AddPhotographer(Database.DB, photographer)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+	err = json.NewDecoder(r.Body).Decode(&photographer)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	w.Write([]byte("Photographer added successfully ..."))
+	log.Println("Photographer added successfully ...")
+
 }
 
 func GetPhoto(w http.ResponseWriter, r *http.Request) {
@@ -136,6 +158,8 @@ func GetPhotographer(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// Delete functions
+
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userID, err := strconv.ParseUint(params["id"], 32, 32)
@@ -155,6 +179,37 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("User deleted successfully ...")
 }
 
+func DeletePhoto(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	userId, err := strconv.ParseUint(params["id"], 32, 32)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	helpers.DeletePhoto(Database.DB, int(userId))
+
+	w.Write([]byte("Photo deleted successfully ..."))
+	log.Println("Photo deleted successfully ...")
+
+}
+
+func DeletePhotographer(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId, err := strconv.ParseUint(params["id"], 32, 32)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	helpers.DeletePhotographer(Database.DB, int(userId))
+	w.Write([]byte("Photographer deleted successfully ..."))
+	log.Println("Photographer deleted successfully ...")
+
+}
+
+//
 // func ServePages(w http.ResponseWriter, tmpl string) {
 // 	parsedTemplates, _ := template.ParseFiles("./templates/" + tmpl)
 // 	err := parsedTemplates.Execute(w, nil)
