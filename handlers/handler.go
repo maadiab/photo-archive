@@ -136,6 +136,25 @@ func GetPhotographer(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["id"], 32, 32)
+
+	if err != nil {
+		log.Println("Error: cannot delete this user, not found !!!", err)
+
+	}
+
+	err = helpers.DeleteUser(Database.DB, int(userID))
+
+	if err != nil {
+		log.Println("Error: ", err)
+	}
+	w.Write([]byte("User Deleted successfully ..."))
+
+	log.Println("User deleted successfully ...")
+}
+
 // func ServePages(w http.ResponseWriter, tmpl string) {
 // 	parsedTemplates, _ := template.ParseFiles("./templates/" + tmpl)
 // 	err := parsedTemplates.Execute(w, nil)

@@ -91,7 +91,7 @@ func GetUser(db *sqlx.DB, userID int) (core.User, error) {
 func GetPhotographer(db *sqlx.DB, userID int) (core.Photographer, error) {
 	var photographer core.Photographer
 
-	err := db.Get(&photographer, "SELECT * FROM photographer WHERE id = $1", userID)
+	err := db.Get(&photographer, "SELECT FROM photographer WHERE id = $1", userID)
 
 	if err != nil {
 		log.Println("Error: no photographer found !!!", err)
@@ -99,4 +99,23 @@ func GetPhotographer(db *sqlx.DB, userID int) (core.Photographer, error) {
 
 	return photographer, err
 
+}
+
+func DeleteUser(db *sqlx.DB, userID int) error {
+
+	_, err := db.Exec("DELETE FROM users WHERE id = $1", userID)
+	if err != nil {
+		log.Println("Error: Cannot delete this user !!!", err)
+		return err
+	}
+	return err
+}
+
+func DeletePhoto(db *sqlx.DB, userID int) error {
+	_, err := db.Exec("DELETE * FROM photos WHERE id = $1", userID)
+	if err != nil {
+		log.Println("Error: Cannot delete this user !!!", err)
+		return err
+	}
+	return err
 }
