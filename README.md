@@ -22,16 +22,35 @@ go get:
 
 <tbody>
 <tr>
-<td>`/login`</td>
+<td>'/login'</td>
+<td>POST</td>
+<td>use it to login user create serect token</td>
+<td>{"username":"...", "password":"..."}</td>
+<td>200 ok if user found</td>
+</tr>
+<tr>
+<td>'/signup'</td>
 <td>POST</td>
 </tr>
 <tr>
-<td>`/signup`</td>
+<td>'/signup'</td>
 <td>POST</td>
 </tr>
 <tr>
-<td>`/signup`</td>
-<td>POST</td>
+<td>'/users'</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>'/users/{id}'</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>'/photos'</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>'/photos/{id}'</td>
+<td>GET</td>
 </tr>
 </tbody>
 </table>
