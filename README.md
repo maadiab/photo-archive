@@ -10,8 +10,11 @@ go get:
 
 <table>
 <thead>
-<td>route</td>
+
+<tr>
+<td><thead>route<thead></td>
 <td>method</td>
+</tr>
 </thead>
 <tr>
 
