@@ -19,7 +19,10 @@ go get:
 
 <tbody>
 <tr>
-
+<td>/login</td>
+</tr>
+<tr>
+<td>/signup</td>
 </tr>
 </tbody>
 </table>
