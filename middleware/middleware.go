@@ -123,7 +123,47 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 // Refresh token
-// ....
+
+func RefreshToken(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("token")
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	tokenStr := cookie.Value
+	claims := &Claims{}
+
+	jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+		return JwtKey, nil
+	})
+
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	expirationTime := time.Now().Add(time.Minute * 15)
+
+	claims.ExpiresAt = expirationTime.Unix()
+
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+
+	tokenString, err := token.SignedString(JwtKey)
+
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "refreshed_token",
+		Value:   tokenString,
+		Expires: expirationTime,
+	})
+
+}
+
 // finish refresh
 
 // Authentications (real middleware)
