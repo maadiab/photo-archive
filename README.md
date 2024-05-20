@@ -14,18 +14,24 @@ go get:
 <tr>
 <th>Route</th>
 <th>Method</th>
+<th>Description</th>
+<th>Parameters</th>
+<th>Expected Response</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>/login</td>
+<td>`/login`</td>
 <td>POST</td>
 </tr>
 <tr>
-<td>/signup</td>
+<td>`/signup`</td>
 <td>POST</td>
-
+</tr>
+<tr>
+<td>`/signup`</td>
+<td>POST</td>
 </tr>
 </tbody>
 </table>
