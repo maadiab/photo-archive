@@ -12,11 +12,14 @@ go get:
 <thead>
 
 <tr>
-<td><thead>route<thead></td>
-<td>method</td>
+<th>route</th>
+<th>method</th>
 </tr>
 </thead>
+
+<tbody>
 <tr>
 
 </tr>
+</tbody>
 </table>
