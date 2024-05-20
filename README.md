@@ -12,17 +12,20 @@ go get:
 <thead>
 
 <tr>
-<th>route</th>
-<th>method</th>
+<th>Route</th>
+<th>Method</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
 <td>/login</td>
+<td>POST</td>
 </tr>
 <tr>
 <td>/signup</td>
+<td>POST</td>
+
 </tr>
 </tbody>
 </table>
