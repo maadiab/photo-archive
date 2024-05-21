@@ -54,12 +54,13 @@ func AddUser(db *sqlx.DB, user core.User) error {
 }
 
 func Addimage(db *sqlx.DB, photo core.Photo) error {
-	_, err := Database.DB.Exec("INSERT INTO photos (name, photographer, tags) VALUES ($1,$2,$3)", photo.Name, photo.Photographer, photo.Tags)
+	_, err := db.Exec("INSERT INTO photos (name, photographer, tags) VALUES ($1,$2,$3)", photo.Name, photo.Photographer, photo.Tags)
 	if err != nil {
 		log.Println("Error inserting photo into database: ", err)
 		return err
 	}
 	log.Println("photo added successfully ...")
+	log.Println(photo)
 	return err
 }
 
@@ -124,7 +125,7 @@ func DeleteUser(db *sqlx.DB, userID int) error {
 }
 
 func DeletePhoto(db *sqlx.DB, userID int) error {
-	_, err := db.Exec("DELETE * FROM photos WHERE id = $1", userID)
+	_, err := db.Exec("DELETE FROM photos WHERE id = $1", userID)
 	if err != nil {
 		log.Println("Error: Cannot delete this user !!!", err)
 		return err

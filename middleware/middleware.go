@@ -138,10 +138,10 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return JwtKey, nil
 	})
 
-	if err != nil {
-		log.Println("Error: ", err)
-		return
-	}
+	// if err != nil {
+	// 	log.Println("Error: ", err)
+	// 	return
+	// }
 
 	expirationTime := time.Now().Add(time.Minute * 15)
 

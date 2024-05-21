@@ -67,14 +67,16 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 func Addimage(w http.ResponseWriter, r *http.Request) {
 	var photo core.Photo
 
-	err := helpers.Addimage(Database.DB, photo)
-	if err != nil {
-		log.Println("Error: ", err)
-		return
-	}
-	err = json.NewDecoder(r.Body).Decode(&photo)
+	err := json.NewDecoder(r.Body).Decode(&photo)
+	// log.Println(photo)
 	if err != nil {
 		log.Println("Error decoding photo !!!", err)
+		return
+	}
+
+	err = helpers.Addimage(Database.DB, photo)
+	if err != nil {
+		log.Println("Error: ", err)
 		return
 	}
 }
@@ -112,6 +114,7 @@ func GetPhoto(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error: no user found !!!", err)
+		return
 	}
 	w.Write(jsonData)
 }
@@ -131,9 +134,25 @@ func GetPhotos(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error: ", err)
 		return
 	}
-
 	w.Write(jsonData)
+}
 
+func GetPhotographers(w http.ResponseWriter, r *http.Request) {
+
+	var photographers []core.Photographer
+
+	photographers, err := helpers.GetPhotographers(Database.DB)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	jsonData, err := json.Marshal(photographers)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+	w.Write(jsonData)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -149,10 +168,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error: no user found !!!", err)
+		return
 	}
 
 	w.Write(jsonData)
-
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -162,6 +181,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := helpers.GetUsers(Database.DB)
 	if err != nil {
 		log.Println("Error: ", err)
+		return
 	}
 
 	jsonData, err := json.Marshal(users)
@@ -181,12 +201,13 @@ func GetPhotographer(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.ParseUint(params["id"], 32, 32)
 	if err != nil {
 		log.Println("Error: no photographer found !!!", err)
+		return
 	}
 
 	photographer, nil := helpers.GetPhotographer(Database.DB, int(userID))
 	if err != nil {
 		log.Println("Error: no photographer with given id found !!! ", err)
-
+		return
 	}
 
 	jsonData, err := json.Marshal(photographer)
@@ -205,6 +226,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error: cannot delete this user, not found !!!", err)
+		return
 
 	}
 
@@ -212,6 +234,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error: ", err)
+		return
 	}
 	w.Write([]byte("User Deleted successfully ..."))
 
@@ -227,7 +250,11 @@ func DeletePhoto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helpers.DeletePhoto(Database.DB, int(userId))
+	err = helpers.DeletePhoto(Database.DB, int(userId))
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
 
 	w.Write([]byte("Photo deleted successfully ..."))
 	log.Println("Photo deleted successfully ...")
@@ -242,7 +269,11 @@ func DeletePhotographer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helpers.DeletePhotographer(Database.DB, int(userId))
+	err = helpers.DeletePhotographer(Database.DB, int(userId))
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
 	w.Write([]byte("Photographer deleted successfully ..."))
 	log.Println("Photographer deleted successfully ...")
 
