@@ -4,7 +4,7 @@ This is a  very simple archive manager for photos (only CRUD) and it just for re
 
 if you want to take this repository and complete this api you are welcome ^-^
 
-# Go get: 
+### Go get: 
 
 	`go get github.com/golang-jwt/jwt/v5 v5.2.1`
 	`go get github.com/gorilla/mux v1.8.1`
@@ -13,7 +13,7 @@ if you want to take this repository and complete this api you are welcome ^-^
 	`go get golang.org/x/crypto/bcrypt`
 
 
-# Routes:
+### Routes:
 
 <table>
 <thead>
@@ -122,8 +122,17 @@ if you want to take this repository and complete this api you are welcome ^-^
 <td></td>
 <td>200 ok</td>
 </tr>
+
+<!-- /deleteuser/{id}-->
+<tr>
+<td>'/deleteuser/{id}'</td>
+<td>DELETE</td>
+<td>delete user by its id</td>
+<td></td>
+<td>401 no content</td>
+</tr>
 </tbody>
 </table>
 
-# Note:
+### Note:
 This is not public software, so only admins can add new users to the system.

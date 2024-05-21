@@ -107,12 +107,29 @@ func GetPhoto(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error: no photos with given id found !!!")
 		return
 	}
-
 	user, nil := helpers.GetPhoto(Database.DB, int(userID))
 	jsonData, err := json.Marshal(user)
 
 	if err != nil {
 		log.Println("Error: no user found !!!", err)
+	}
+	w.Write(jsonData)
+}
+
+func GetPhotos(w http.ResponseWriter, r *http.Request) {
+	var photographers []core.Photographer
+
+	photographers, err := helpers.GetPhotographers(Database.DB)
+
+	if err != nil {
+		log.Println("Error: ", err)
+		return
+	}
+
+	jsonData, err := json.Marshal(photographers)
+	if err != nil {
+		log.Println("Error: ", err)
+		return
 	}
 
 	w.Write(jsonData)
