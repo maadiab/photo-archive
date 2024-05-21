@@ -104,7 +104,7 @@ func GetPhoto(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userID, err := strconv.ParseUint(params["id"], 32, 32)
 	if err != nil {
-		log.Println("Error: no user found !!!")
+		log.Println("Error: no photos with given id found !!!")
 		return
 	}
 
@@ -132,6 +132,26 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error: no user found !!!", err)
+	}
+
+	w.Write(jsonData)
+
+}
+
+func GetUsers(w http.ResponseWriter, r *http.Request) {
+
+	var users []core.User
+
+	users, err := helpers.GetUsers(Database.DB)
+	if err != nil {
+		log.Println("Error: ", err)
+	}
+
+	jsonData, err := json.Marshal(users)
+
+	if err != nil {
+		log.Println("Error: no user found !!!", err)
+		return
 	}
 
 	w.Write(jsonData)
