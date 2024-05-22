@@ -9,50 +9,31 @@ import (
 	"github.com/maadiab/aldifaapi/routes"
 )
 
-// func init() {
-// 	fs := http.FileServer(http.Dir("static"))
-// 	http.Handle("/static/", http.StripPrefix("static", fs))
-
-// 	storage := http.FileServer(http.Dir("storage"))
-// 	http.Handle("/storage/", http.StripPrefix("storage", storage))
-// }
-
 func main() {
-
 	ctx := context.Background()
-
 	_, err := Database.ConnectDB(ctx)
-
 	if err != nil {
 		log.Println("Error Connecting Database !!!", err)
 	}
-
 	err = Database.CreateUsersTable()
 	if err != nil {
 		log.Println("main: Error Creating users Table !!!", err)
 	}
-
 	err = Database.CreatePhotographerTable()
 	if err != nil {
 		log.Println("main: Error Creating photographers Table !!!", err)
 	}
-
 	err = Database.CreatePhotosTable()
 	if err != nil {
 		log.Println("main: Error Creating phogtos Table !!!", err)
 	}
-
 	err = Database.CreatePermissionsTable()
 	if err != nil {
 		log.Println("main: Error Creating permissions Table !!!", err)
 	}
-
 	r := routes.Router()
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
 	log.Println("server is running at port: 8080 ...")
 	http.ListenAndServe(":8080", r)
-
 	defer Database.DB.Close()
-
 }

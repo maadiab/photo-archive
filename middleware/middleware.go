@@ -137,12 +137,6 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 	jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
 		return JwtKey, nil
 	})
-
-	// if err != nil {
-	// 	log.Println("Error: ", err)
-	// 	return
-	// }
-
 	expirationTime := time.Now().Add(time.Minute * 15)
 
 	claims.ExpiresAt = expirationTime.Unix()

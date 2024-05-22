@@ -86,6 +86,7 @@ func AddPhotographer(w http.ResponseWriter, r *http.Request) {
 
 	_, err := helpers.AddPhotographer(Database.DB, photographer)
 	if err != nil {
+		http.Error(w, "Error", http.StatusInternalServerError)
 		log.Println("Error: ", err)
 		return
 	}
