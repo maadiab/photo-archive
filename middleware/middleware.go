@@ -204,42 +204,54 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 // }
 
 // modified version from middleware
-func Authenticate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
+func Authenticate() Middleware {
+	return func(f http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			cookie, err := r.Cookie("token")
+			if err != nil {
+				if err == http.ErrNoCookie {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			tokenStr := cookie.Value
+			claims := &Claims{}
+
+			tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+				return JwtKey, nil
+			})
+
+			if err != nil {
+				if err == jwt.ErrSignatureInvalid {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			if !tkn.Valid {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
+
+			log.Println("Authenticated user:", claims.Username)
+
+			ctx := context.WithValue(context.Background(), "claims", claims)
+			f(w, r.WithContext(ctx))
 		}
+	}
+}
 
-		tokenStr := cookie.Value
-		claims := &Claims{}
+type Middleware func(http.HandlerFunc) http.HandlerFunc
 
-		tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
-			return JwtKey, nil
-		})
-
-		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		if !tkn.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		log.Println("Authenticated user:", claims.Username)
-
-		ctx := context.WithValue(r.Context(), "claims", claims)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+// Chain applies middlewares to a http.HandlerFunc
+func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
+	for _, m := range middlewares {
+		f = m(f)
+	}
+	return f
 }

@@ -34,6 +34,13 @@ func ServeHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
+
+	// ctx := r.Context()
+	// payload := json.Unmarshal()
+	// payload.FestivalID
+
+	// permissions.CanAddUser(ctx, paylaod.FestivalID)
+
 	w.Write([]byte("This is signup page ..."))
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
