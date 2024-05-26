@@ -8,7 +8,7 @@ import (
 
 func Router() *mux.Router {
 
-	signupPermissions := []string{"read", "write"}
+	// signupPermissions := []string{"read", "write"}
 	//GetPhotoPermissions := []string{"read"}
 	//DeletePermissions := []string{"read", "write", "delete"}
 	//addPhotoPermissions := []string{"read", "write"}
@@ -29,7 +29,13 @@ func Router() *mux.Router {
 	router.Handle("/deletephoto/{id}", middleware.Authenticate(middleware.AuthorizationMiddleware(DeletePermissions)(http.HandlerFunc(Handlers.DeletePhoto)))).Methods("POST")
 	router.Handle("/deletephotographer/{id}", middleware.Authenticate(middleware.AuthorizationMiddleware(DeletePermissions)(http.HandlerFunc(Handlers.DeletePhotographer)))).Methods("POST")
 	*/
-	router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware(signupPermissions))).Methods("POST")
+	// router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware(signupPermissions))).Methods("POST")
+
+	// router.HandleFunc("/adduser",middleware.Authenticate())
+
+	router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware("user")))
+
+	// router.Handle(middleware.Authenticate(),Handlers.AddPhotographer)
 
 	return router
 }

@@ -2,6 +2,7 @@ package Handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,6 +35,11 @@ func ServeHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
+
+	v := r.Context().Value("claims")
+	// cookie, err := r.Cookie("token")
+
+	fmt.Printf("v is %#v", v)
 
 	// ctx := r.Context()
 	// payload := json.Unmarshal()

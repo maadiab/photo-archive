@@ -16,7 +16,7 @@ import (
 
 var JwtKey = []byte("secret_key")
 
-var UserPerms []string
+var UserPerms string
 
 func ComparePassword(hashedPassword []byte, inputPassword string) error {
 	return bcrypt.CompareHashAndPassword(hashedPassword, []byte(inputPassword))
@@ -48,20 +48,20 @@ func CheckUser(ctx context.Context, db *sqlx.DB, user Credentials) error {
 		return err
 	}
 
-	var userPermissions []string
-	err = db.Select(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
-	if err != nil {
-		log.Println("Error: no permissions found !!!", err)
-		return err
-	}
+	// var userPermissions []string
+	// err = db.Select(&userPermissions, "SELECT permission_type FROM permissions WHERE user_type =$1", userCred.Permissions)
+	// if err != nil {
+	// 	log.Println("Error: no permissions found !!!", err)
+	// 	return err
+	// }
 
-	UserPerms = userPermissions
+	// UserPerms = userPermissions	log.Println(UserPerms)
+	// log.Println(userPermissions)
 
-	log.Println("user verified successfully ...")
+	UserPerms = userCred.Permissions
 
 	log.Println("user credential: ", userCred.Username)
-	log.Println(UserPerms)
-	log.Println(userPermissions)
+	log.Println("user credential: ", userCred.Permissions)
 
 	return err
 }
@@ -75,8 +75,8 @@ type Credentials struct {
 }
 
 type Claims struct {
-	Username    string   `json:"username"`
-	Permissions []string `json:"permissions"`
+	Username   string `json:"username"`
+	Permission string `json:"permission"`
 	jwt.StandardClaims
 }
 
@@ -99,8 +99,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Setting claims
 	expirationTime := time.Now().Add(time.Minute * 5)
 	claims := &Claims{
-		Username:    cred.Username,
-		Permissions: UserPerms,
+		Username:   cred.Username,
+		Permission: UserPerms,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -123,7 +123,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 // Refresh token
-
 func RefreshToken(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
 	if err != nil {
@@ -204,8 +203,61 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 // }
 
 // modified version from middleware
+// func Authenticate() Middleware {
+// 	return func(f http.HandlerFunc) http.HandlerFunc {
+// 		return func(w http.ResponseWriter, r *http.Request) {
+// 			cookie, err := r.Cookie("token")
+// 			if err != nil {
+// 				if err == http.ErrNoCookie {
+// 					w.WriteHeader(http.StatusUnauthorized)
+// 					return
+// 				}
+// 				w.WriteHeader(http.StatusBadRequest)
+// 				return
+// 			}
+
+// 			tokenStr := cookie.Value
+// 			claims := &Claims{}
+
+// 			tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+// 				return JwtKey, nil
+// 			})
+
+// 			if err != nil {
+// 				if err == jwt.ErrSignatureInvalid {
+// 					w.WriteHeader(http.StatusUnauthorized)
+// 					return
+// 				}
+// 				w.WriteHeader(http.StatusBadRequest)
+// 				return
+// 			}
+
+// 			if !tkn.Valid {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+
+// 			log.Println("Authenticated user:", claims.Username)
+
+// 			ctx := context.WithValue(context.Background(), "claims", claims)
+// 			f(w, r.WithContext(ctx))
+// 		}
+// 	}
+// }
+
+type Middleware func(http.HandlerFunc) http.HandlerFunc
+
+// Chain applies middlewares to a http.HandlerFunc
+func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
+	for _, m := range middlewares {
+		f = m(f)
+	}
+	return f
+}
+
+// Authentications (real middleware)
 func Authenticate() Middleware {
-	return func(f http.HandlerFunc) http.HandlerFunc {
+	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("token")
 			if err != nil {
@@ -218,9 +270,9 @@ func Authenticate() Middleware {
 			}
 
 			tokenStr := cookie.Value
-			claims := &Claims{}
+			Claims := &Claims{}
 
-			tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+			tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
 				return JwtKey, nil
 			})
 
@@ -238,20 +290,18 @@ func Authenticate() Middleware {
 				return
 			}
 
-			log.Println("Authenticated user:", claims.Username)
+			log.Println("Hello, ", Claims.Username)
 
-			ctx := context.WithValue(context.Background(), "claims", claims)
-			f(w, r.WithContext(ctx))
+			ctx := context.WithValue(r.Context(), "Claims", Claims)
+
+			// v := r.Context().Value("claims")
+			// cookie, err := r.Cookie("token")
+
+			// fmt.Printf("middleware v is %#v", v, ctx)
+
+			// context.WithValue(r.Context(), "claims", Claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	}
-}
 
-type Middleware func(http.HandlerFunc) http.HandlerFunc
-
-// Chain applies middlewares to a http.HandlerFunc
-func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
-	for _, m := range middlewares {
-		f = m(f)
-	}
-	return f
 }
