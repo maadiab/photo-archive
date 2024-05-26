@@ -95,33 +95,15 @@ func AuthorizationMiddleware(requiredPermissions string) Middleware {
 			})
 
 			// check user permissions
-			if requiredPermissions != claims.Permission {
-				log.Println("Error: user does not have permissions !!!")
-				return
+			if claims.Permission != "admin" {
+				if requiredPermissions != claims.Permission {
+					log.Println("Error: user does not have permissions !!!")
+					return
+				}
 			}
 
 			log.Println("User permissions is: ", claims.Permission)
 
-			// if err != nil {
-			// 	log.Println("Error: ", err)
-			// 	return
-			// }
-
-			// fmt.Printf("v is %#v", tokenStr)
-
-			// if v == nil {
-			// 	log.Println("No permissions found !!!")
-			// 	http.Error(w, "Permission not found !!!", http.StatusInternalServerError)
-			// 	return
-			// }
-
-			//log.Println(claims.Permissions)
-			/*
-				if !hasPermissions(claims.Permissions, requiredPermissions) {
-					log.Println("Insufficient permission !!!")
-					http.Error(w, "Insufficient permission !!!", http.StatusForbidden)
-					return
-				}*/
 			// Call the next function
 			h.ServeHTTP(w, r)
 		}
