@@ -36,18 +36,21 @@ func ServeHome(w http.ResponseWriter, r *http.Request) {
 
 func Signup(w http.ResponseWriter, r *http.Request) {
 
-	v := r.Context()
-	// cookie, err := r.Cookie("token")
+	ctx := r.Context()
+	claims := ctx.Value("Claims")
 
-	fmt.Printf("v is %#v", v)
+	fmt.Printf("ctx value is:  %#v", claims)
 
+	// userclaims:= claim{}
+	// 	payload:= json.Unmarshal(claims,&useruserclaims)
 	// ctx := r.Context()
 	// payload := json.Unmarshal()
 	// payload.FestivalID
 
 	// permissions.CanAddUser(ctx, paylaod.FestivalID)
 
-	w.Write([]byte("This is signup page ..."))
+	w.Write([]byte("Welcome to This signup page ..."))
+
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -74,7 +77,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	helpers.AddUser(Database.DB, user)
-
 }
 
 func Addimage(w http.ResponseWriter, r *http.Request) {

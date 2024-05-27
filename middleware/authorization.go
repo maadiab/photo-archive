@@ -107,7 +107,9 @@ func AuthorizationMiddleware(requiredPermissions string) Middleware {
 			// ctx := context.WithValue(r.Context(), "userpermission", claims.Permission)
 
 			// Call the next function
-			h.ServeHTTP(w /*r.WithContext(ctx)*/, r)
+			// h.ServeHTTP(w /*r.WithContext(ctx)*/, r)
+
+			h.ServeHTTP(w, r)
 		}
 	}
 

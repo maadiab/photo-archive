@@ -292,6 +292,8 @@ func Authenticate() Middleware {
 
 			log.Println("Hello, ", Claims.Username)
 
+			log.Printf("Type of Claims is %T\n ", Claims)
+
 			ctx := context.WithValue(r.Context(), "Claims", Claims)
 
 			// v := r.Context().Value("claims")
