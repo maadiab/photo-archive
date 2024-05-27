@@ -33,7 +33,17 @@ func Router() *mux.Router {
 
 	// router.HandleFunc("/adduser",middleware.Authenticate())
 
-	router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware("user")))
+	router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/addphoto", middleware.Chain(Handlers.AddPhotographer, middleware.Authenticate(), middleware.AuthorizationMiddleware("user")))
+	router.HandleFunc("/photos", middleware.Chain(Handlers.GetPhotos, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/photos/{id}", middleware.Chain(Handlers.GetPhoto, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/photographers", middleware.Chain(Handlers.GetPhotographers, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/photographers/{id}", middleware.Chain(Handlers.GetPhotographer, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/users", middleware.Chain(Handlers.GetUsers, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/users/{id}", middleware.Chain(Handlers.GetUsers, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/deleteuser/{id}", middleware.Chain(Handlers.DeleteUser, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/deletephoto/{id}", middleware.Chain(Handlers.DeletePhoto, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
+	router.HandleFunc("/deletephotographer/{id}", middleware.Chain(Handlers.DeletePhotographer, middleware.Authenticate(), middleware.AuthorizationMiddleware("admin")))
 
 	// router.Handle(middleware.Authenticate(),Handlers.AddPhotographer)
 

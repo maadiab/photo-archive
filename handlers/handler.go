@@ -36,7 +36,7 @@ func ServeHome(w http.ResponseWriter, r *http.Request) {
 
 func Signup(w http.ResponseWriter, r *http.Request) {
 
-	v := r.Context().Value("claims")
+	v := r.Context()
 	// cookie, err := r.Cookie("token")
 
 	fmt.Printf("v is %#v", v)

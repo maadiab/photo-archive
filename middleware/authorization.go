@@ -104,8 +104,10 @@ func AuthorizationMiddleware(requiredPermissions string) Middleware {
 
 			log.Println("User permissions is: ", claims.Permission)
 
+			// ctx := context.WithValue(r.Context(), "userpermission", claims.Permission)
+
 			// Call the next function
-			h.ServeHTTP(w, r)
+			h.ServeHTTP(w /*r.WithContext(ctx)*/, r)
 		}
 	}
 

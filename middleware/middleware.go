@@ -296,10 +296,9 @@ func Authenticate() Middleware {
 
 			// v := r.Context().Value("claims")
 			// cookie, err := r.Cookie("token")
-
 			// fmt.Printf("middleware v is %#v", v, ctx)
-
 			// context.WithValue(r.Context(), "claims", Claims)
+
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	}
