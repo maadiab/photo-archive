@@ -245,64 +245,121 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 // 	}
 // }
 
-type Middleware func(http.HandlerFunc) http.HandlerFunc
+// type Middleware func(http.HandlerFunc) http.HandlerFunc
 
-// Chain applies middlewares to a http.HandlerFunc
-func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
-	for _, m := range middlewares {
-		f = m(f)
-	}
-	return f
-}
+// // Chain applies middlewares to a http.HandlerFunc
+// func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
+// 	for _, m := range middlewares {
+// 		f = m(f)
+// 	}
+// 	return f
+// }
 
-// Authentications (real middleware)
-func Authenticate() Middleware {
-	return func(next http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			cookie, err := r.Cookie("token")
-			if err != nil {
-				if err == http.ErrNoCookie {
-					w.WriteHeader(http.StatusUnauthorized)
-					return
-				}
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
+// // Authentications (real middleware)
+// func Authenticate() Middleware {
+// 	return func(next http.HandlerFunc) http.HandlerFunc {
+// 		return func(w http.ResponseWriter, r *http.Request) {
+// 			cookie, err := r.Cookie("token")
+// 			if err != nil {
+// 				if err == http.ErrNoCookie {
+// 					w.WriteHeader(http.StatusUnauthorized)
+// 					return
+// 				}
+// 				w.WriteHeader(http.StatusBadRequest)
+// 				return
+// 			}
 
-			tokenStr := cookie.Value
-			Claims := &Claims{}
+// 			tokenStr := cookie.Value
+// 			Claims := &Claims{}
 
-			tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
-				return JwtKey, nil
-			})
+// 			tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+// 				return JwtKey, nil
+// 			})
 
-			if err != nil {
-				if err == jwt.ErrSignatureInvalid {
-					w.WriteHeader(http.StatusUnauthorized)
-					return
-				}
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
+// 			if err != nil {
+// 				if err == jwt.ErrSignatureInvalid {
+// 					w.WriteHeader(http.StatusUnauthorized)
+// 					return
+// 				}
+// 				w.WriteHeader(http.StatusBadRequest)
+// 				return
+// 			}
 
-			if !tkn.Valid {
+// 			if !tkn.Valid {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+
+// 			log.Println("Hello, ", Claims.Username)
+
+// 			log.Printf("Type of Claims is %T\n ", Claims)
+
+// 			ctx := context.WithValue(r.Context(), "Claims", Claims)
+
+// 			// v := r.Context().Value("claims")
+// 			// cookie, err := r.Cookie("token")
+// 			// fmt.Printf("middleware v is %#v", v, ctx)
+// 			// context.WithValue(r.Context(), "claims", Claims)
+
+// 			next.ServeHTTP(w, r.WithContext(ctx))
+// 		}
+// 	}
+
+// }
+
+func Authenticate(next http.HandlerFunc, requiredPermissions string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		cookie, err := r.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-
-			log.Println("Hello, ", Claims.Username)
-
-			log.Printf("Type of Claims is %T\n ", Claims)
-
-			ctx := context.WithValue(r.Context(), "Claims", Claims)
-
-			// v := r.Context().Value("claims")
-			// cookie, err := r.Cookie("token")
-			// fmt.Printf("middleware v is %#v", v, ctx)
-			// context.WithValue(r.Context(), "claims", Claims)
-
-			next.ServeHTTP(w, r.WithContext(ctx))
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
-	}
 
+		tokenStr := cookie.Value
+		Claims := &Claims{}
+
+		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		log.Println("Hello, ", Claims.Username)
+
+		log.Printf("Type of Claims is %T\n ", Claims)
+
+		// check user permissions
+		if Claims.Permission != "admin" {
+			if requiredPermissions != Claims.Permission {
+				log.Println("Error: user does not have permissions !!!")
+				return
+			}
+		}
+
+		ctx := context.WithValue(r.Context(), "Claims", Claims)
+
+		// v := r.Context().Value("claims")
+		// cookie, err := r.Cookie("token")
+		// fmt.Printf("middleware v is %#v", v, ctx)
+		// context.WithValue(r.Context(), "claims", Claims)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
 }

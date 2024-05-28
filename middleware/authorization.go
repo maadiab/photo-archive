@@ -1,12 +1,5 @@
 package middleware
 
-import (
-	"log"
-	"net/http"
-
-	"github.com/golang-jwt/jwt"
-)
-
 // func hasPermissions(userPermissions []string, requiredPermissions []string) bool {
 // 	for _, perm := range requiredPermissions {
 // 		found := false
@@ -76,41 +69,41 @@ import (
 // 	})
 // }
 
-func AuthorizationMiddleware(requiredPermissions string) Middleware {
+// func AuthorizationMiddleware(requiredPermissions string) Middleware {
 
-	return func(h http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
+// 	return func(h http.HandlerFunc) http.HandlerFunc {
+// 		return func(w http.ResponseWriter, r *http.Request) {
 
-			cookie, err := r.Cookie("token")
-			if err != nil {
-				log.Println("Error: ", err)
-				return
-			}
+// 			cookie, err := r.Cookie("token")
+// 			if err != nil {
+// 				log.Println("Error: ", err)
+// 				return
+// 			}
 
-			tokenStr := cookie.Value
-			claims := &Claims{}
+// 			tokenStr := cookie.Value
+// 			claims := &Claims{}
 
-			jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
-				return JwtKey, nil
-			})
+// 			jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
+// 				return JwtKey, nil
+// 			})
 
-			// check user permissions
-			if claims.Permission != "admin" {
-				if requiredPermissions != claims.Permission {
-					log.Println("Error: user does not have permissions !!!")
-					return
-				}
-			}
+// 			// check user permissions
+// 			if claims.Permission != "admin" {
+// 				if requiredPermissions != claims.Permission {
+// 					log.Println("Error: user does not have permissions !!!")
+// 					return
+// 				}
+// 			}
 
-			log.Println("User permissions is: ", claims.Permission)
+// 			log.Println("User permissions is: ", claims.Permission)
 
-			// ctx := context.WithValue(r.Context(), "userpermission", claims.Permission)
+// 			// ctx := context.WithValue(r.Context(), "userpermission", claims.Permission)
 
-			// Call the next function
-			// h.ServeHTTP(w /*r.WithContext(ctx)*/, r)
+// 			// Call the next function
+// 			// h.ServeHTTP(w /*r.WithContext(ctx)*/, r)
 
-			h.ServeHTTP(w, r)
-		}
-	}
+// 			h.ServeHTTP(w, r)
+// 		}
+// 	}
 
-}
+// }
