@@ -238,13 +238,15 @@ func GetPhotographer(w http.ResponseWriter, r *http.Request) {
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	userID, err := strconv.ParseUint(params["id"], 32, 32)
+	userID, err := strconv.ParseUint(params["id"], 10, 32)
 
 	if err != nil {
 		log.Println("Error: cannot delete this user, not found !!!", err)
 		return
 
 	}
+
+	log.Println("user id passed to helper is: ", userID)
 
 	err = helpers.DeleteUser(Database.DB, int(userID))
 
@@ -260,7 +262,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 func DeletePhoto(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	userId, err := strconv.ParseUint(params["id"], 32, 32)
+	userId, err := strconv.ParseUint(params["id"], 10, 32)
 	if err != nil {
 		log.Println("Error: ", err)
 		return
@@ -279,7 +281,7 @@ func DeletePhoto(w http.ResponseWriter, r *http.Request) {
 
 func DeletePhotographer(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	userId, err := strconv.ParseUint(params["id"], 32, 32)
+	userId, err := strconv.ParseUint(params["id"], 10, 32)
 	if err != nil {
 		log.Println("Error: ", err)
 		return

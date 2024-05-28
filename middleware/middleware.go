@@ -160,47 +160,47 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 // finish refresh
 
 // Authentications (real middleware)
-// func Authenticate(next http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		cookie, err := r.Cookie("token")
-// 		if err != nil {
-// 			if err == http.ErrNoCookie {
-// 				w.WriteHeader(http.StatusUnauthorized)
-// 				return
-// 			}
-// 			w.WriteHeader(http.StatusBadRequest)
-// 			return
-// 		}
+func Authenticate(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-// 		tokenStr := cookie.Value
-// 		Claims := &Claims{}
+		tokenStr := cookie.Value
+		Claims := &Claims{}
 
-// 		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
-// 			return JwtKey, nil
-// 		})
+		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
 
-// 		if err != nil {
-// 			if err == jwt.ErrSignatureInvalid {
-// 				w.WriteHeader(http.StatusUnauthorized)
-// 				return
-// 			}
-// 			w.WriteHeader(http.StatusBadRequest)
-// 			return
-// 		}
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-// 		if !tkn.Valid {
-// 			w.WriteHeader(http.StatusUnauthorized)
-// 			return
-// 		}
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-// 		log.Println("Hello, ", Claims.Username)
+		log.Println("Hello, ", Claims.Username)
 
-// 		// ctx := context.WithValue(r.Context(), "Claims", Claims)
-// 		ctx := context.WithValue(r.Context(), "claims", Claims)
-// 		next.ServeHTTP(w, r.WithContext(ctx))
-// 	}
+		// ctx := context.WithValue(r.Context(), "Claims", Claims)
+		ctx := context.WithValue(r.Context(), "claims", Claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
 
-// }
+}
 
 // modified version from middleware
 // func Authenticate() Middleware {
@@ -307,59 +307,68 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 // }
 
-func Authenticate(next http.HandlerFunc, requiredPermissions string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+// // final middlewared
+// func Authenticate(next http.HandlerFunc, requiredPermissions string) http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
 
-		cookie, err := r.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+// 		cookie, err := r.Cookie("token")
+// 		if err != nil {
+// 			if err == http.ErrNoCookie {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+// 			w.WriteHeader(http.StatusBadRequest)
+// 			return
+// 		}
 
-		tokenStr := cookie.Value
-		Claims := &Claims{}
+// 		tokenStr := cookie.Value
+// 		Claims := &Claims{}
 
-		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
-			return JwtKey, nil
-		})
+// 		tkn, err := jwt.ParseWithClaims(tokenStr, Claims, func(t *jwt.Token) (interface{}, error) {
+// 			return JwtKey, nil
+// 		})
 
-		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+// 		if err != nil {
+// 			if err == jwt.ErrSignatureInvalid {
+// 				w.WriteHeader(http.StatusUnauthorized)
+// 				return
+// 			}
+// 			w.WriteHeader(http.StatusBadRequest)
+// 			return
+// 		}
 
-		if !tkn.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
+// 		if !tkn.Valid {
+// 			w.WriteHeader(http.StatusUnauthorized)
+// 			return
+// 		}
 
-		log.Println("Hello, ", Claims.Username)
+// 		log.Println("Hello, ", Claims.Username)
 
-		log.Printf("Type of Claims is %T\n ", Claims)
+// 		log.Printf("Type of Claims is %T\n ", Claims)
 
-		// check user permissions
-		if Claims.Permission != "admin" {
-			if requiredPermissions != Claims.Permission {
-				log.Println("Error: user does not have permissions !!!")
-				return
-			}
-		}
+// 		// check user permissions
+// 		// if Claims.Permission != "admin" {
+// 		// 	// if Claims.Permission == requiredPermissions {
+// 		// 	// 	log.Println("Error: user does not have permissions !!!")
+// 		// 	// 	return
+// 		// 	// }
 
-		ctx := context.WithValue(r.Context(), "Claims", Claims)
+// 		// 	switch permission := Claims.Permission; permission {
+// 		// 	case "user":
+// 		// 		if requiredPermissions == "user" {
+// 		// 			log.Println("access granted ...")
+// 		// 			// break
+// 		// 		}
+// 		// 	}
+// 		// }
 
-		// v := r.Context().Value("claims")
-		// cookie, err := r.Cookie("token")
-		// fmt.Printf("middleware v is %#v", v, ctx)
-		// context.WithValue(r.Context(), "claims", Claims)
+// 		ctx := context.WithValue(r.Context(), "Claims", Claims)
 
-		next.ServeHTTP(w, r.WithContext(ctx))
-	}
-}
+// 		// v := r.Context().Value("claims")
+// 		// cookie, err := r.Cookie("token")
+// 		// fmt.Printf("middleware v is %#v", v, ctx)
+// 		// context.WithValue(r.Context(), "claims", Claims)
+
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	}
+// }

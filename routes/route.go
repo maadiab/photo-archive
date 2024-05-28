@@ -32,18 +32,18 @@ func Router() *mux.Router {
 	// router.HandleFunc("/adduser", middleware.Chain(Handlers.Signup, middleware.Authenticate(), middleware.AuthorizationMiddleware(signupPermissions))).Methods("POST")
 
 	// router.HandleFunc("/adduser",middleware.Authenticate())
-	d
-	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup, "admin"))
-	router.HandleFunc("/addphoto", middleware.Authenticate(Handlers.addphoto, "admin"))
-	router.HandleFunc("/photos", middleware.Authenticate())
-	router.HandleFunc("/photos/{id}", middleware.Authenticate())
-	router.HandleFunc("/photographers", middleware.Authenticate())
-	router.HandleFunc("/photographers/{id}", middleware.Authenticate())
-	router.HandleFunc("/users", middleware.Authenticate())
-	router.HandleFunc("/users/{id}", middleware.Authenticate())
-	router.HandleFunc("/deleteuser/{id}", middleware.Authenticate())
-	router.HandleFunc("/deletephoto/{id}", middleware.Authenticate())
-	router.HandleFunc("/deletephotographer/{id}", middleware.Authenticate())
+
+	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup))
+	// router.HandleFunc("/addphoto", middleware.Authenticate(Handlers.Addimage, "admin"))
+	// router.HandleFunc("/photos", middleware.Authenticate(Handlers.GetPhotos, "admin"))
+	// router.HandleFunc("/photos/{id}", middleware.Authenticate(Handlers.GetPhoto, "admin"))
+	// router.HandleFunc("/photographers", middleware.Authenticate(Handlers.GetPhotographers, "admin"))
+	// router.HandleFunc("/photographers/{id}", middleware.Authenticate(Handlers.GetPhotographer, "admin"))
+	// router.HandleFunc("/users", middleware.Authenticate(Handlers.GetUsers, "admin"))
+	// router.HandleFunc("/users/{id}", middleware.Authenticate(Handlers.GetUser, "admin"))
+	router.HandleFunc("/deleteuser/{id}", middleware.Authenticate(Handlers.DeleteUser))
+	// router.HandleFunc("/deletephoto/{id}", middleware.Authenticate(Handlers.DeletePhoto, "admin"))
+	// router.HandleFunc("/deletephotographer/{id}", middleware.Authenticate(Handlers.DeletePhotographer, "admin"))
 
 	// router.Handle(middleware.Authenticate(),Handlers.AddPhotographer)
 

@@ -116,11 +116,26 @@ func GetPhotographer(db *sqlx.DB, userID int) (core.Photographer, error) {
 
 func DeleteUser(db *sqlx.DB, userID int) error {
 
-	_, err := db.Exec("DELETE FROM users WHERE id = $1", userID)
+	log.Println("user id will be deleted is: ", userID)
+
+	result, err := db.Exec("DELETE FROM users WHERE id = $1", userID)
 	if err != nil {
-		log.Println("Error: Cannot delete this user !!!", err)
+		log.Println("Error: Cannot delete this user, user not found !!!", err)
 		return err
 	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Println("no user deleted !!!")
+		// return err
+	}
+
+	if rowsAffected == 0 {
+		log.Println("No rows affected !!!")
+		// return fmt.Errorf("cannot delete this user")
+	}
+
+	log.Println(err, "its from DeleteUser helper ...", userID)
 	return err
 }
 
