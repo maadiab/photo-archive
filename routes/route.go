@@ -33,7 +33,7 @@ func Router() *mux.Router {
 
 	// router.HandleFunc("/adduser",middleware.Authenticate())
 
-	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup))
+	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup, "admin"))
 	// router.HandleFunc("/addphoto", middleware.Authenticate(Handlers.Addimage, "admin"))
 	// router.HandleFunc("/photos", middleware.Authenticate(Handlers.GetPhotos, "admin"))
 	// router.HandleFunc("/photos/{id}", middleware.Authenticate(Handlers.GetPhoto, "admin"))
@@ -41,7 +41,7 @@ func Router() *mux.Router {
 	// router.HandleFunc("/photographers/{id}", middleware.Authenticate(Handlers.GetPhotographer, "admin"))
 	// router.HandleFunc("/users", middleware.Authenticate(Handlers.GetUsers, "admin"))
 	// router.HandleFunc("/users/{id}", middleware.Authenticate(Handlers.GetUser, "admin"))
-	router.HandleFunc("/deleteuser/{id}", middleware.Authenticate(Handlers.DeleteUser))
+	router.HandleFunc("/deleteuser/{id}", middleware.Authenticate(Handlers.DeleteUser, "admin"))
 	// router.HandleFunc("/deletephoto/{id}", middleware.Authenticate(Handlers.DeletePhoto, "admin"))
 	// router.HandleFunc("/deletephotographer/{id}", middleware.Authenticate(Handlers.DeletePhotographer, "admin"))
 

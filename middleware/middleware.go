@@ -160,7 +160,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 // finish refresh
 
 // Authentications (real middleware)
-func Authenticate(next http.HandlerFunc) http.HandlerFunc {
+func Authenticate(next http.HandlerFunc, permission string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("token")
 		if err != nil {
