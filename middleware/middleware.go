@@ -166,6 +166,8 @@ func Authenticate(next http.HandlerFunc, permission string) http.HandlerFunc {
 		if err != nil {
 			if err == http.ErrNoCookie {
 				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("Error Unauthorized User !!!"))
+
 				return
 			}
 			w.WriteHeader(http.StatusBadRequest)
@@ -190,6 +192,7 @@ func Authenticate(next http.HandlerFunc, permission string) http.HandlerFunc {
 
 		if !tkn.Valid {
 			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Error Unauthorized User !!!"))
 			return
 		}
 

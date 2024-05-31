@@ -33,10 +33,10 @@ func Router() *mux.Router {
 
 	// router.HandleFunc("/adduser",middleware.Authenticate())
 
-	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup, "admin"))
+	router.HandleFunc("/adduser", middleware.Authenticate(Handlers.Signup, "admin")).Methods("POST")
 	// router.HandleFunc("/addphoto", middleware.Authenticate(Handlers.Addimage, "admin"))
-	// router.HandleFunc("/photos", middleware.Authenticate(Handlers.GetPhotos, "admin"))
-	// router.HandleFunc("/photos/{id}", middleware.Authenticate(Handlers.GetPhoto, "admin"))
+	router.HandleFunc("/photos", middleware.Authenticate(Handlers.GetPhotos, "admin")).Methods("GET")
+	router.HandleFunc("/photos/{id}", middleware.Authenticate(Handlers.GetPhoto, "admin")).Methods("GET")
 	router.HandleFunc("/photographers", middleware.Authenticate(Handlers.GetPhotographers, "admin"))
 	// router.HandleFunc("/photographers/{id}", middleware.Authenticate(Handlers.GetPhotographer, "admin"))
 	router.HandleFunc("/users", middleware.Authenticate(Handlers.GetUsers, "admin"))
