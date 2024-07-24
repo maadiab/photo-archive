@@ -68,10 +68,10 @@ function Overview() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mb={2} />
+      <MDBox mb={4} />
       <Header>
-        <MDBox mt={5} mb={3}>
-          <Grid container spacing={1}>
+        <MDBox>
+          {/* <Grid container spacing={1}>
             <Grid item xs={12} md={6} xl={4}>
               <PlatformSettings />
             </Grid>
@@ -111,11 +111,11 @@ function Overview() {
             <Grid item xs={12} xl={4}>
               <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
             </Grid>
-          </Grid>
+          </Grid> */}
         </MDBox>
         <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
-            Projects
+            قائمة الصور
           </MDTypography>
           <MDBox mb={1}>
             <MDTypography variant="button" color="text">

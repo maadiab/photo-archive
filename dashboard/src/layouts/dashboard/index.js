@@ -57,13 +57,13 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Bookings"
-                count={281}
+                title="إجمالي عدد الصور"
+                count={33000}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -72,11 +72,11 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
+                title="الصور المضافة اليوم"
                 count="2,300"
                 percentage={{
                   color: "success",
@@ -86,7 +86,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
@@ -100,13 +100,13 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          <Grid item xs={12} md={6} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Followers"
+                title="إجمالي عدد المصورين"
                 count="+91"
                 percentage={{
                   color: "success",
@@ -118,7 +118,7 @@ function Dashboard() {
           </Grid>
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3}>
+          {/* <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
@@ -156,20 +156,20 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
-          </Grid>
+          </Grid> */}
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+            <Grid item xs={12} md={6} lg={12}>
               <Projects />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>
-      <Footer />
+      {/* <Footer /> */}
     </DashboardLayout>
   );
 }

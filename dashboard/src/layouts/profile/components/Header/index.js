@@ -65,8 +65,8 @@ function Header({ children }) {
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
   return (
-    <MDBox position="relative" mb={5}>
-      <MDBox
+    <MDBox position="relative" pt={6} pb={3}>
+      {/* <MDBox
         display="flex"
         alignItems="center"
         position="relative"
@@ -82,7 +82,7 @@ function Header({ children }) {
           backgroundPosition: "50%",
           overflow: "hidden",
         }}
-      />
+      /> */}
       <Card
         sx={{
           position: "relative",
@@ -92,7 +92,7 @@ function Header({ children }) {
           px: 2,
         }}
       >
-        <Grid container spacing={3} alignItems="center">
+        {/* <Grid container spacing={3} alignItems="center">
           <Grid item>
             <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
           </Grid>
@@ -136,7 +136,7 @@ function Header({ children }) {
               </Tabs>
             </AppBar>
           </Grid>
-        </Grid>
+        </Grid> */}
         {children}
       </Card>
     </MDBox>

@@ -155,7 +155,7 @@ export default function App() {
             <Sidenav
               color={sidenavColor}
               // brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="أرشيف مجلة الدفاع"
+              brandName="أرشيف صور مجلة الدفاع"
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
